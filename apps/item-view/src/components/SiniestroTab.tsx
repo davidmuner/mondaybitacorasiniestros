@@ -136,19 +136,19 @@ export function SiniestroTab({ context, numeroSiniestro }: Props) {
               title="Oficina *"
               placeholder="Código de oficina"
               value={oficina}
-              onChangeText={(val: string) => setOficina(val)}
+              onChange={(val: string) => setOficina(val)}
             />
             <TextField
               title="Ramo *"
               placeholder="Código de ramo"
               value={ramo}
-              onChangeText={(val: string) => setRamo(val)}
+              onChange={(val: string) => setRamo(val)}
             />
             <TextField
               title="Póliza *"
               placeholder="Número de póliza"
               value={poliza}
-              onChangeText={(val: string) => setPoliza(val)}
+              onChange={(val: string) => setPoliza(val)}
             />
             <Text type="text2" color="secondary">
               Los tres campos son obligatorios para esta búsqueda.
@@ -161,7 +161,7 @@ export function SiniestroTab({ context, numeroSiniestro }: Props) {
             title="Número de Siniestro *"
             placeholder="Ej. 123456789"
             value={numSiniestro}
-            onChangeText={(val: string) => setNumSiniestro(val)}
+            onChange={(val: string) => setNumSiniestro(val)}
           />
         )}
 
@@ -170,7 +170,7 @@ export function SiniestroTab({ context, numeroSiniestro }: Props) {
             title="Número de FileNet *"
             placeholder="Ej. FN-000123"
             value={numFilenet}
-            onChangeText={(val: string) => setNumFilenet(val)}
+            onChange={(val: string) => setNumFilenet(val)}
           />
         )}
       </div>
