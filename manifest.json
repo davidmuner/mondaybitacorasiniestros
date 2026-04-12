@@ -7,7 +7,7 @@
           {
             "type": "ItemView",
             "name": "Consulta Siniestro",
-            "url": "https://TU_DOMINIO/item-view",
+            "url": "https://mondaybitacorasiniestros-item-view.vercel.app/item-view",
             "description": "Consulta datos del siniestro desde la API y puebla campos del tablero"
           }
         ],
