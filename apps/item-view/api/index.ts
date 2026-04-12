@@ -1,6 +1,5 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import jwt from 'jsonwebtoken';
-import { fetchSiniestro } from '../server/src/services/siniestro.service';
 
 interface MondayContext {
   accountId: number;
@@ -39,18 +38,33 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     });
   }
 
+  const baseUrl = process.env.SINIESTROS_API_BASE_URL;
+  const apiToken = process.env.SINIESTROS_API_TOKEN;
+  if (!baseUrl || !apiToken) return res.status(500).json({ error: 'API externa no configurada' });
+
+  const params = new URLSearchParams();
+  if (oficina) params.set('oficina', oficina);
+  if (ramo) params.set('ramo', ramo);
+  if (poliza) params.set('poliza', poliza);
+  if (numeroSiniestro) params.set('numeroSiniestro', numeroSiniestro);
+  if (filenet) params.set('filenet', filenet);
+
   try {
-    const data = await fetchSiniestro({ oficina, ramo, poliza, numeroSiniestro, filenet });
+    const upstream = await fetch(`${baseUrl}/siniestros?${params.toString()}`, {
+      headers: {
+        Authorization: `Bearer ${apiToken}`,
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+      },
+      signal: AbortSignal.timeout(10_000),
+    });
+
+    if (upstream.status === 404) return res.status(404).json({ error: 'Siniestro no encontrado' });
+    if (!upstream.ok) return res.status(502).json({ error: 'No se pudo conectar con la API de siniestros' });
+
+    const data = await upstream.json();
     return res.status(200).json({ data });
-  } catch (err: unknown) {
-    const error = err as { status?: number; message?: string };
-    const status = error.status ?? 500;
-    const message =
-      status === 404
-        ? 'Siniestro no encontrado'
-        : status === 502
-          ? 'No se pudo conectar con la API de siniestros'
-          : 'Error interno del servidor';
-    return res.status(status).json({ error: message });
+  } catch {
+    return res.status(500).json({ error: 'Error interno del servidor' });
   }
 }
